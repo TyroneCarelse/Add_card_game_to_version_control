@@ -1,0 +1,519 @@
+---
+title: "Programming in R (774)"
+author: |
+  | Pre-block Assignment 1
+  | Department of Industrial Engineering
+  | Stellenbosch University
+  | 10 January 2021
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  html_notebook: default
+---
+
+***
+__Responsible__ Lecturer: Mr LE Burger (eldonburger@sun.ac.za)  
+__Deadline__: 24 January 2022 @ 23:59  
+__Total__: 40 marks  
+
+***
+
+# Instructions
+
+1. Pre-block assignment 1 evaluates your understanding of the content covered in topics 1, 2, 3 and 4 of the course
+1. The assignment must be submitted on SUNLearn as an R Markdown document. To complete this assignment, complete the following steps: 
+    1. Download the ___Rmd file___
+    1. Rename and save ___the Rmd file___ as `????????PBA.Rmd`
+    1. Complete all the questions in the provided ___code chunks___:
+    1. Complete the code in the provided ___code chunks___:
+        - Do not use any additional packages or libraries not included in the base installation of R
+        - Code chunks that include the comment `#DO NOT EDIT` should not be modified
+1. Before submitting your final document, make sure that your document can (i) execute from start to end and (ii) does not rely on any external files. Any additional files submitted will not be evaluated when the assignment is marked
+1. Must follow the correct naming conventions
+
+
+# Introduction
+
+In this assignment, you will create an agent that can play the well-known card game blackjack. To implement an agent capable of playing blackjack you will be required to answer 10 coding questions. Each question is composed of instructions followed by a code chunk that you will have to complete to answer the question. In most cases, directly after a question, a code chunk is available to test your code.  If the code that you provided works, you should not receive any error in the testing code chunks. The test provided is not necessarily complete or an indication of the final mark you will receive for a question but will be helpful to evaluate your code for typical flaws.
+
+Question 0, which does not count any marks, is provided below to illustrate how to complete code chunks.
+
+***
+
+___Question 0___
+
+Create an ___atomic vector___ called `my_test_vector` that contains the values `1`, `2`, `3` and `4` using the function `c()`. The object `my_test_vector` should be stored as an ___integer___. 
+
+```{r Question_0, echo=TRUE}
+# Normally you will have to complete the code below
+my_test_vector <- c(1L, 2L, 3L, 4L)
+my_test_vector
+```
+
+```{r Question_0_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (!identical(my_test_vector, c(1L, 2L, 3L, 4L))){
+  stop("Vector incorrect")
+}
+```
+
+The above two code chunks should execute without any errors. However, if you defined `my_test_vector` incorrectly, the second code chunk will display an error. In other words, the second code chunk or test code chunk can be used to test your code. 
+
+***
+
+# Game Set-up
+
+To play a card game one or more decks of cards are required. Blackjack is played with a standard deck of 52 cards. A standard deck of cards has four suits namely: hearts, clubs, spades and diamonds. Each suite in the standard deck of cards contains thirteen cards: ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, jack, queen and king
+
+In blackjack, the suit of a card does not influence the game. Rather a value is assigned to each card:
+
+- Each of the numeric cards is simply their face value. In other words, the 2 of hearts has a value of 2, the 3 of spades has a value of 3, etc.
+- The jack, queen and kind are assigned the value 10.
+- An ace can either have a value of 1 or 11 depending on the cards in your hand. For the moment simply assume that the value of an ace equals 1.
+
+
+___Question 1___ (2)
+
+Create an ___atomic vector___ called `deck`. The ___object___ `deck` should store 52 ___elements___ of type ___integer___. Each ___element___ stored in the ___object___ `deck` represents a card of a standard deck and is represented by its value. For example, the ___vector___ `c(1L, 2L, 3L, 4L)` represents the cards ace, two, three and four. 
+
+```{r Question_1, echo=TRUE}
+# Complete the following code
+deck <- rep(c(1L:10L, 10L, 10L, 10L), times = 4)
+```
+
+```{r Question_1_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (length(deck) != 52) stop("The object deck does not contain 52 elements")
+if (typeof(deck) != "integer") stop("The object deck does not contain integer values")
+if (sum(deck) != 340) stop("The values of the cards contained in the deck are incorrect")
+if (!all(sapply(deck, is.element, set = c(1:10)))) {
+  stop("The values of the cards contained in the deck are incorrect") }
+```
+
+***
+
+Given a deck of cards, we require a method to draw a card from the deck. 
+
+___Question 2___ (2)
+
+Write a ___function___ called `draw_a_card` with one ___argument___ `deck`. The ___function___ `draw_a_card` should ___return___ the first ___element___ of the value passed to the `deck` argument
+
+```{r Question_2, echo=TRUE}
+# Complete the following code
+draw_a_card <- function(deck) {
+  return(deck[1])
+}
+```
+
+```{r Question_2_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (draw_a_card(c(1000, 100, 10)) != 1000) {
+  stop("The function does not return the first element")}
+if (length(draw_a_card) != 1) stop("The function returns more than one value")
+```
+
+***
+
+While the ___function___ defined in ___question 2___ will allow you to draw or select a card from the ___object___ `deck`, the ___function___ will always ___return___ the same card. In a normal game of blackjack, the deck will first be shuffled before a card is drawn. We can simplify the functionality of drawing a card, by simply selecting a random card from the values passed to the `deck` ___argument___ of the ___function___ `draw_a_card` each time the ___function___ `draw_a_card` is ___called___. 
+
+___Question 3___ (2)
+
+Modify the ___function___ `draw_a_card` from ___question 2___, to ___return___ one random card from the values passed to the `deck` ___argument___. Use the ___function___ `sample()` inside the ___function___ `draw_a_card` to ___return___ a random card from the deck.  
+
+```{r Question_3, echo=TRUE}
+# Complete the following code
+draw_a_card <- function(deck) {
+  card <- sample(deck, size = 1)
+  return(card)
+}
+```
+
+```{r Question_3_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+set.seed(1)
+if (draw_a_card(c(1,2) == draw_a_card(c(1,2)))) stop("Random selection is not performed")
+```
+
+***
+
+Blackjack is played between a player and a dealer. When the game starts both the player and dealer is dealt two cards each. 
+
+___Question 4___ (2)
+
+Use the ___function___ `draw_a_card`, developed in ___question 3___, to assign two cards to the object `player_hand`. The object `player_hand` should be an atomic vector that stores values as ___integers___.   
+
+```{r Question_4, echo=TRUE}
+# Complete the following code
+# draw one card
+player_hand <- draw_a_card(deck)
+# remove the card from the deck
+ind <- which(player_hand == deck)[1]
+deck <- deck[-ind]
+# draw the second card
+player_hand <- c(player_hand, draw_a_card(deck))
+# remove the second card from the deck
+ind <- which(player_hand[2] == deck)[1]
+deck <- deck[-ind]
+```
+
+```{r Question_4_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (typeof(player_hand) != "integer") {
+  stop("The object player_hand does not contain integer values") }
+if (length(player_hand) != 2) stop("The object player_hand does not contain 2 elements")
+```
+
+The ___object___ `dealer_hand` can be defined in the same way as the ___object___ `player_hand`. For now, we skip defining the ___object___ `dealer_hand` as the logic is similar to the ___object___ `player_hand`.  
+
+***
+
+# Determining the winner
+
+In blackjack, a player wins the round if the score of the player is greater than the score of the dealer given that the score of the player does not exceed 21. The score of the player and the score of the dealer is computed in the exact same way. The score of a hand can be computed as follow: 
+
+- If the total value (sum of values) of cards in a hand exceeds 21, known as a bust, assign a score of 0 to the hand  
+- If a hand has an ace and the total value of the cards in hand is 11 or less (with the ace counting 1), count the ace as an 11 and not a 1 when computing the total value of cards
+- If a hand contains exactly two cards and the total value of cards in a hand is equal to 21 - known as a "blackjack" - assign a value of 21.5 to the hand 
+
+
+___Question 5___ (4)
+
+Create a ___function___ called `score_hand` with a single ___argument___ `hand`. The ___function___ `score_hand` should compute the score of a hand based on the logic described above. The ___function___ should ___return___ the score as a single ___numeric___ value
+
+```{r Question_5, echo=TRUE}
+# Complete the following code
+score_hand <- function(hand) {
+  # the total value of cards in a hand
+  total <- sum(hand)
+  # if a hand has an ace and the total value of the cards in hand is 11 or less
+  if(1L %in% hand & total <= 11) {
+    # count the ace as an 11 and not a 1 when computing the total value of cards
+    total <- total + 10
+  }
+  # if the total value of cards exceeds 21, assign a score of 0 to the hand
+  if(total > 21) {
+    # "bust"
+    total <- 0
+  }
+  # if a hand contains exactly two cards and the total value of cards in a hand
+  # is equal to 21, assign a value of 21.5 to the hand
+  if(length(hand) == 2 & total == 21) {
+    # "blackjack"
+    total <- 21.5
+  }
+  return(total)
+}
+```
+
+```{r Question_5_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+test_cards <- list(c(10, 1), c(10, 5, 6), c(10, 1, 1),
+                   c(7, 6, 1, 5), c(3, 6, 1, 1),
+                   c(2, 3, 4, 10), c(5, 1, 9, 1, 1),
+                   c(5, 10, 7), c(10, 9, 1, 1, 1))
+test_cards_val <- c(21.5, 21, 12, 19, 21, 19, 17, 0, 0)
+if (!identical(test_cards_val, sapply(test_cards, score_hand))){
+  stop("One or more tests failed") }
+```
+
+***
+
+Given the score of the dealer and the score of a player, the amount of money that the player wins or losses can be computed as follow:
+
+- If a player busts, the player loses their bet even if the dealer bust.
+- If the score of a player is less than the score of the dealer, the player loses their bet.
+- If the score of a player is greater than the score of the dealer, the player wins an amount equal to their initial bet. However, if the player has blackjack and the score of the player is greater than the score of the dealer, the player receives an additional amount of 0.5 times their bet. 
+- If the score of the player and the dealer is equal, the player keeps their bet.
+
+___Question 6___ (4)
+
+Create a ___function___ called `payout` with three ___arguments___: `player_score`, `dealer_score` and `bet`. Assign a default ___value___ of `1` to the ___argument___ `bet`. The goal of the ___function___ `payout` is to ___return___ the amount that the player should receive (positive number) or pay-in (negative number) based on the values passed to the `player_score`, `dealer_score` and `bet` ___arguments___. The final amount should be returned as a single ___numeric___ value. For example, if the player wins without blackjack the function should return 1\*bet; implying that the player wins 1\*bet in this round.
+
+```{r Question_6, echo=TRUE}
+# Complete the following code
+payout <- function(player_score, dealer_score, bet = 1) {
+  # if a player busts or if the score of a player is less than the score of the dealer
+  if(player_score == 0 | player_score < dealer_score) {
+    # the player loses their bet
+    pay <- -1*bet
+  # otherwise, if the score of a player is greater than the score of the dealer
+  } else if(player_score > dealer_score) {
+    # the player wins an amount equal to their initial bet
+    pay <- 1*bet
+    # if the player has blackjack
+    if(player_score == 21.5) {
+      # the player receives an additional amount of 0.5 times their bet
+      pay <- pay + 0.5*bet
+    }
+  # otherwise, if the score of the player and the dealer is equal
+  } else {
+    # the player keeps their bet
+    pay <- 0
+  }
+  return(pay)
+}
+```
+
+```{r Question_6_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+test_vals <- c(0, 16, 19, 20, 21, 21.5)
+test_payout <- matrix(c( -1, 1, 1, 1, 1, 1.5,
+                         -1, 0, 1, 1, 1, 1.5,
+                         -1, -1, 0, 1, 1, 1.5,
+                         -1, -1, -1, 0, 1, 1.5,
+                         -1, -1, -1, -1, 0, 1.5,
+                         -1, -1, -1, -1, -1, 0),
+                      nrow = length(test_vals), 
+                      byrow = TRUE,
+                      dimnames = list(dealer = test_vals, player = test_vals))
+
+for(i in seq_along(test_vals)) {
+  for(j in seq_along(test_vals)) {
+    winnings = payout(dealer_score = test_vals[i], player_score = test_vals[j])
+    if (winnings != test_payout[i,j]) stop("Incorrect payout returned")
+    }
+  }
+
+```
+
+***
+
+# Game Actions
+
+We now have a way to define a deck of cards, draw a card, determine the score of a hand and determine the final payout. Next, we focus on implementing the actions in a game of blackjack. 
+
+In blackjack, the player performs his/her actions first. Once the player has performed their actions, it is the dealers turn to perform actions. After the dealer has performed his/her actions, the game is concluded and the payout is determined. 
+
+The action that a player should take is based on their cards and the first card dealt to the dealer. The first card dealt to the dealer is visible to the player. 
+
+## Player actions
+
+Depending on the rules used in blackjack, a player can have multiple actions available. We will simplify the problem by only considering the actions hit and stand.
+
+1.	When a player requests a “hit”, one card is drawn from the deck and added to the hand of the player
+2.	When a player chooses to “stand”, the turn of a player ends.
+
+
+___Question 7___ (2)
+
+Define a ___function___ called `hit`. The ___function___ `hit` has only one ___argument___,  `hand`. When the ___function___ `hit` is ___called___ the ___function___ should add a card to the vector passed to the `hand` ___argument___ using the ___function___ `draw_a_card` defined in ___question 3___. The ___function___ `hit` should ___return___ the original vector passed to the ___argument___ `hand` with a new card added to the last position of the vector.
+
+```{r Question_7, echo=TRUE}
+# Complete the following code
+hit <- function(hand) {
+  # add a card to the hand
+  new_hand <- c(hand, draw_a_card(deck))
+  return(new_hand)
+}
+```
+
+```{r Question_7_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (length(hit(c(1,2,3))) != 4) stop("vector returned is an incorrect length")
+```
+
+***
+
+## Dealer actions
+
+Once the player chooses to stand or bust, it is the dealers turn to play. According to the rules of blackjack, the dealer must perform the action hit when the hand value of the dealer is less than 17 or a bust.
+
+___Question 8___ (4)
+
+Create a ___function___ called `dealer_strategy`. The ___function___ `dealer_strategy` has only one ___argument___, `hand`. The ___function___ `dealer_strategy` should ___call___ the ___function___ `hit` defined in ___question 7___ until the dealer score is more than 17 or the dealer bust. Note based on the value passed to the `hand` ___argument___, the ___function___ ``hit` might be not be called, called once or called more than once. 
+
+```{r Question_8, echo=TRUE}
+# Complete the following code
+dealer_strategy <- function(hand) {
+  # hand value of the dealer
+  val <- score_hand(hand)
+  # while the dealer score is less than 17 and not bust
+  while(val < 17 & val != 0) {
+    # the dealer performs the action hit
+    hand <- hit(hand)
+    # the new hand value of the dealer
+    val <- score_hand(hand)
+  }
+  return(hand)
+} 
+```
+
+```{r Question_8_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (!identical(dealer_strategy(c(10,1)),c(10,1))) stop("Do not hit failed")
+if (!identical(dealer_strategy(c(10,10,2)),c(10,10,2))) stop("Do not hit failed")
+if (!identical(dealer_strategy(c(10,7)),c(10,7))) stop("Do not hit failed")
+if (length(dealer_strategy(c(10,6))) != 3) stop("Hit once failed")
+if (length(dealer_strategy(c(2))) < 3) stop("Hit more than once failed")
+```
+
+***
+
+# Game agent
+
+Now that we have implemented the game mechanics we can start by implementing our game agent – the player. To implement our game agent, we will make use of a lookup table to determine when the player should perform the action hit or when the player should perform the action stand.
+
+We can implement a lookup table in R using a ___data frame___. The ___data frame___ will be used to determine if the player should perform the action hit or stand based on:
+
+1.	_hand_value_: The sum of the cards in the player hand (columnhand_value)
+2.	_useable_Ace_: Whether the hand of the player contains a useable ace, an ace than can count as 11 without the player going bust (column: )
+3.	_dealer_ace_ to _dealer_ten_: the face-up card of the dealer
+
+```{r action_table, echo=TRUE}
+# DO NOT EDIT
+df_action_lookup <- data.frame(hand_value = c(0:21, 2:11),
+                               usable_ace = c(rep(FALSE, 22), rep(TRUE, 10)),
+                               dealer_ace = c("Stand", rep("Hit", 16), rep("Stand", 5),
+                                              rep("Hit", 7), rep("Stand", 3)),
+                               dealer_2 = c("Stand", rep("Hit", 12), rep("Stand", 9),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_3 = c("Stand", rep("Hit", 12), rep("Stand", 9),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_4 = c("Stand", rep("Hit", 11), rep("Stand", 10),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_5 = c("Stand", rep("Hit", 11), rep("Stand", 10),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_6 = c("Stand", rep("Hit", 11), rep("Stand", 10),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_7 = c("Stand", rep("Hit", 16), rep("Stand", 5),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_8 = c("Stand", rep("Hit", 16), rep("Stand", 5),
+                                            rep("Hit", 6), rep("Stand", 4)),
+                               dealer_9 = c("Stand", rep("Hit", 16), rep("Stand", 5),
+                                            rep("Hit", 7), rep("Stand", 3)),
+                               dealer_10 = c("Stand", rep("Hit", 16), rep("Stand", 5),
+                                             rep("Hit", 7), rep("Stand", 3)))
+head(df_action_lookup)                          
+```
+
+___Question 9___ (6)
+
+Create a ___function___ called `lookup_action` with two ___arguments___ `hand` and `dealer_card`. The ___function___ `lookup_action` should ___return___ whether the player should "Hit" or "Stand" using the ___data frame___ `df_action_lookup`. 
+
+```{r Question_9, echo=TRUE}
+# Complete the following code
+lookup_action <- function(hand, dealer_card) {
+  # hand value
+  val <- sum(hand)
+  # does the hand of the player contain a useable ace?
+  ace <- (1L %in% hand) & (val <= 11)
+  # if the hand value exceeds 21, assign a score of 0 to the hand
+  if(val > 21) {
+    val <- 0
+  }
+  # look up whether the player should "Hit" or "Stand"
+  r <- which(df_action_lookup$hand_value == val & df_action_lookup$usable_ace == ace)
+  action <- df_action_lookup[r, dealer_card + 2]
+  return(action)
+}
+```
+
+```{r Question_9_test, echo=TRUE}
+# TEST CODE
+# DO NOT EDIT
+if (!lookup_action(c(10,6), 1) == "Hit") stop("Wrong value returned")
+if (!lookup_action(c(10,6), 2) == "Stand") stop("Wrong value returned")
+if (!lookup_action(c(10,3,3), 2) == "Stand") stop("Wrong value returned")
+if (!lookup_action(c(8,1), c(10)) == "Stand") stop("Wrong value returned")
+if (!lookup_action(c(7,2), c(10)) == "Hit") stop("Wrong value returned")
+if (!lookup_action(c(10,4,1,10), 10) == "Stand") stop("Wrong value returned")
+```
+
+# Simulating a game
+
+We now have all the pieces in place to evaluate the effectiveness of our player. To determine the effectiveness of our player, we will simulate multiple games. 
+
+___Question 10___ (12)
+
+Write a ___function___ named `play_game` that:
+
+1. Creates a deck of card, called `deck`, using the code defined in ___question 1___
+2. Deals two cards from the deck of cards defined in the previous step using the ___function___ defined in ___question 3___. The two cards should be added to the ___integer___ vector `player_hand`
+3. Deals two cards from the deck of cards defined in the previous step using the ___function___ defined in ___question 3___. The two cards should be added to the ___integer___ vector `dealer_hand`
+4. ___Call___ the ___function___ `lookup_action` defined in ___question 9___ to determine the actions of the player. The ___function___ `lookup_action` might have to be called more than once
+5. Call the ___function___ `dealer_strategy` defined in ___question 8___ to determine the actions of the dealer
+6. Calculate the player score using the ___function___ `socre_hand` defined in ___question 5___
+7. Calculate the dealer score using the ___function___ `socre_hand` defined in ___question 5___
+8. Determine and ___return___ the payout using the function `payout` defined in ___question 6___
+
+You can assume that a bet of 1 will always be used. 
+
+```{r Question_10, echo=TRUE}
+# Complete the following code
+play_game <- function() {
+  # create a deck of cards
+  deck <- rep(c(1L:10L, 10L, 10L, 10L), times = 4)
+  
+  # deal two cards from the deck of cards to the player
+  # draw one card
+  player_hand <- draw_a_card(deck)
+  # remove the card from the deck
+  ind <- which(player_hand == deck)[1]
+  deck <- deck[-ind]
+  # draw the second card
+  player_hand <- c(player_hand, draw_a_card(deck))
+  # remove the second card from the deck
+  ind <- which(player_hand[2] == deck)[1]
+  deck <- deck[-ind]
+  
+  # deal two cards from the deck of cards to the dealer
+  # draw one card
+  dealer_hand <- draw_a_card(deck)
+  # remove the card from the deck
+  ind <- which(dealer_hand == deck)[1]
+  deck <- deck[-ind]
+  # draw the second card
+  dealer_hand <- c(dealer_hand, draw_a_card(deck))
+  # remove the second card from the deck
+  ind <- which(dealer_hand[2] == deck)[1]
+  deck <- deck[-ind]
+  
+  # determine the action of the player
+  player_action <- lookup_action(player_hand, dealer_hand[1])
+  # while player requests a "hit"
+  while(player_action == "Hit") {
+    # draw and add one card to player's hand
+    player_hand <- hit(player_hand)
+    # remove the card from the deck
+    ind <- which(tail(player_hand, 1) == deck)[1]
+    deck <- deck[-ind]
+    # determine the next action of the player
+    player_action <- lookup_action(player_hand, dealer_hand[1])
+  }
+  
+  # determine the actions of the dealer
+  dealer_hand <- dealer_strategy(dealer_hand)
+  
+  # calculate the player score
+  player_score <- score_hand(player_hand)
+  
+  # calculate the dealer score
+  dealer_score <- score_hand(dealer_hand)
+  
+  # determine and return the payout
+  pay <- payout(player_score, dealer_score)
+  return(pay)
+}
+```
+
+*** 
+
+Given the ___function___ `play_game`, we can run multiple games to determine how good our player strategy is. The results can be visualised as a bar plot:
+
+```{r Simulate, echo=TRUE}
+# DO NOT EDIT
+barplot(summary(factor(replicate(1000, play_game()))),
+        xlab = "Outcome of game",
+        ylab = "Count")
+```
+
