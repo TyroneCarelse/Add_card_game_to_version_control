@@ -2,9 +2,9 @@
 title: "Programming in R (774)"
 author: |
   | Pre-block Assignment 1
-  | Department of Industrial Engineering
-  | Stellenbosch University
-  | 10 January 2021
+  | 
+  | 
+  |
 output:
   html_document:
     df_print: paged
@@ -13,9 +13,9 @@ output:
 ---
 
 ***
-__Responsible__ Lecturer: Mr LE Burger (eldonburger@sun.ac.za)  
-__Deadline__: 24 January 2022 @ 23:59  
-__Total__: 40 marks  
+__Responsible__ 
+__Deadline__:
+__Total__:
 
 ***
 
